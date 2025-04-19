@@ -244,4 +244,16 @@
 
     function createFallingStar() {
       const star = document.createElement("div");
-      star.className = "
+      star.className = "falling-star";
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 2}s`;
+      stars.appendChild(star);
+      setTimeout(() => star.remove(), 3000); // Удаление после завершения анимации
+    }
+
+    // Падающие звезды раз в 3 секунды
+    setInterval(createFallingStar, 3000);
+
+  </script>
+</body>
+</html>
