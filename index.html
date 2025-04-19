@@ -1,8 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Сайт-посвящение для самой любимой и прекрасной">
   <title>Мы вместе</title>
   <style>
     :root {
@@ -23,21 +25,42 @@
       text-align: center;
       overflow: hidden;
       position: relative;
-      transition: background 2s ease;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transition: opacity 1.5s ease;
+      z-index: -1;
+    }
+
+    .day-mode::before {
+      background: var(--day-bg);
+      opacity: 1;
+    }
+
+    .night-mode::before {
+      background: var(--night-bg);
+      opacity: 1;
     }
 
     h1, p, h2 {
       z-index: 2;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     h1 {
       font-size: 2.5em;
       margin-bottom: 0.3em;
+      transition: 0.3s transform;
     }
 
     p {
       font-size: 1.2em;
       max-width: 80%;
+      line-height: 1.5;
     }
 
     .stars, .sun, .moon, .clouds {
@@ -71,7 +94,7 @@
       background: radial-gradient(circle, #ffe259, #ffa751);
       border-radius: 50%;
       animation: pulse 3s infinite ease-in-out;
-      box-shadow: 0 0 30px 10px rgba(255, 223, 0, 0.5);
+      filter: drop-shadow(0 0 20px rgba(255, 223, 0, 0.7));
       margin: auto;
       margin-top: 50px;
     }
@@ -83,7 +106,7 @@
       border-radius: 50%;
       margin: auto;
       margin-top: 50px;
-      box-shadow: 0 0 20px 5px #ccc;
+      filter: drop-shadow(0 0 15px rgba(204, 204, 204, 0.5));
     }
 
     @keyframes pulse {
@@ -94,14 +117,15 @@
     .cloud {
       position: absolute;
       background: #fff;
-      border-radius: 50%;
-      opacity: 0.5;
+      border-radius: 50px;
+      opacity: 0.3;
       animation: floatClouds 60s linear infinite;
+      filter: blur(5px);
     }
 
     @keyframes floatClouds {
-      0% { transform: translateX(-200px); }
-      100% { transform: translateX(100vw); }
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     .heart {
@@ -126,7 +150,7 @@
       position: absolute;
       top: 20px;
       right: 20px;
-      background: #ffffff40;
+      background: rgba(255,255,255,0.25);
       border: none;
       padding: 10px 15px;
       border-radius: 10px;
@@ -134,6 +158,17 @@
       font-weight: bold;
       color: #000;
       z-index: 3;
+      backdrop-filter: blur(5px);
+      transition: 0.3s all;
+    }
+
+    .mode-toggle:hover {
+      background: rgba(255,255,255,0.4);
+      transform: scale(1.05);
+    }
+
+    .counter {
+      transition: 0.5s all ease-in-out;
     }
 
     @media (max-width: 600px) {
@@ -158,9 +193,9 @@
 </head>
 <body>
   <button class="mode-toggle" onclick="toggleMode()">Сменить режим</button>
-  <h1 id="daysTogether">Загрузка...</h1>
+  <h1 id="daysTogether" class="counter">Загрузка...</h1>
   <p>Каждый день с тобой — как волшебство. Спасибо за всё, что ты делаешь. Люблю тебя безмерно.</p>
-  <h2 id="daysToAnniversary"></h2>
+  <h2 id="daysToAnniversary" class="counter"></h2>
   <p style="margin-top: 40px; font-size: 1em; opacity: 0.8;">Сайт создан с любовью</p>
 
   <div class="stars" id="stars"></div>
@@ -169,58 +204,106 @@
   <div class="moon" id="moon" style="display: none;"><div class="moon-shape"></div></div>
 
   <script>
+    // Инициализация
     const startDate = new Date("2024-11-04");
     const today = new Date();
-    const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-    document.getElementById("daysTogether").textContent = `Мы вместе уже ${diffDays} дней`;
+    const diffDays = Math.floor(Math.abs(today - startDate) / (1000 * 60 * 60 * 24));
+    
+    // Анимация счетчика
+    function animateCounter(element, finalValue, duration = 1000) {
+      let start = 0;
+      const step = (timestamp) => {
+        if (!start) start = timestamp;
+        const progress = timestamp - start;
+        const current = Math.min(finalValue, Math.floor((progress / duration) * finalValue));
+        element.textContent = `Мы вместе уже ${current} дней`;
+        if (progress < duration) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
 
-    const nextAnniversary = new Date("2025-11-04");
-    const daysToAnniv = Math.ceil((nextAnniversary - today) / (1000 * 60 * 60 * 24));
-    document.getElementById("daysToAnniversary").textContent = `До нашей годовщины осталось ${daysToAnniv} дней`;
+    // Звуковые эффекты
+    const clickSound = new Audio('click.mp3');
+    const modeSound = new Audio('mode-switch.mp3');
 
+    // Режимы и сохранение
+    let mode = localStorage.getItem('mode') || 'auto';
     const body = document.body;
-    const stars = document.getElementById("stars");
-    const sun = document.getElementById("sun");
-    const moon = document.getElementById("moon");
-    const clouds = document.getElementById("clouds");
-    let mode = "auto";
+    const elements = {
+      stars: document.getElementById("stars"),
+      sun: document.getElementById("sun"),
+      moon: document.getElementById("moon"),
+      clouds: document.getElementById("clouds"),
+      daysTogether: document.getElementById("daysTogether"),
+      daysToAnniversary: document.getElementById("daysToAnniversary")
+    };
 
+    // Обновление дат
+    function updateDates() {
+      const today = new Date();
+      const nextAnniversary = new Date(today.getFullYear() + 1, 10, 4);
+      if (today > nextAnniversary) nextAnniversary.setFullYear(today.getFullYear());
+      
+      const diffDays = Math.floor(Math.abs(today - startDate) / (1000 * 60 * 60 * 24));
+      const daysToAnniv = Math.ceil((nextAnniversary - today) / (1000 * 60 * 60 * 24));
+      
+      animateCounter(elements.daysTogether, diffDays);
+      elements.daysToAnniversary.textContent = `До нашей годовщины осталось ${daysToAnniv} дней`;
+    }
+
+    // Режимы отображения
     function setDay() {
-      body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--day-bg');
-      sun.style.display = "block";
-      moon.style.display = "none";
-      stars.style.display = "none";
-      clouds.style.display = "block";
-      clouds.innerHTML = '';
-      for (let i = 0; i < 10; i++) {
-        const cloud = document.createElement("div");
-        cloud.className = "cloud";
-        cloud.style.width = `${100 + Math.random() * 100}px`;
-        cloud.style.height = `${60 + Math.random() * 40}px`;
-        cloud.style.top = `${Math.random() * 40}%`;
-        cloud.style.left = `${Math.random() * 100}%`;
-        cloud.style.animationDuration = `${30 + Math.random() * 30}s`;
-        clouds.appendChild(cloud);
-      }
+      body.classList.remove('night-mode');
+      body.classList.add('day-mode');
+      elements.sun.style.display = "block";
+      elements.moon.style.display = "none";
+      elements.stars.style.display = "none";
+      elements.clouds.style.display = "block";
+      createClouds();
     }
 
     function setNight() {
-      body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--night-bg');
-      sun.style.display = "none";
-      moon.style.display = "block";
-      clouds.style.display = "none";
-      stars.style.display = "block";
-      stars.innerHTML = '';
-      for (let i = 0; i < 100; i++) {
-        const star = document.createElement("div");
-        star.className = "star";
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.animationDelay = `${Math.random() * 2}s`;
-        stars.appendChild(star);
+      body.classList.remove('day-mode');
+      body.classList.add('night-mode');
+      elements.sun.style.display = "none";
+      elements.moon.style.display = "block";
+      elements.clouds.style.display = "none";
+      elements.stars.style.display = "block";
+      createStars();
+    }
+
+    function createClouds() {
+      elements.clouds.innerHTML = '';
+      for (let i = 0; i < 10; i++) {
+        const cloud = document.createElement("div");
+        cloud.className = "cloud";
+        cloud.style.cssText = `
+          width: ${100 + Math.random() * 100}px;
+          height: ${60 + Math.random() * 40}px;
+          top: ${Math.random() * 40}%;
+          left: ${Math.random() * 100}%;
+          animation-duration: ${30 + Math.random() * 30}s;
+          background: hsl(${Math.random() * 360}, 70%, 95%);
+        `;
+        elements.clouds.appendChild(cloud);
       }
     }
 
+    function createStars() {
+      elements.stars.innerHTML = '';
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement("div");
+        star.className = "star";
+        star.style.cssText = `
+          top: ${Math.random() * 100}%;
+          left: ${Math.random() * 100}%;
+          animation-delay: ${Math.random() * 2}s;
+        `;
+        elements.stars.appendChild(star);
+      }
+    }
+
+    // Переключение режимов
     function applyMode() {
       if (mode === "auto") {
         const hour = new Date().getHours();
@@ -230,16 +313,23 @@
       } else {
         setNight();
       }
+      modeSound.play().catch(() => {});
     }
 
     function toggleMode() {
       mode = mode === "auto" ? "day" : mode === "day" ? "night" : "auto";
+      localStorage.setItem('mode', mode);
       applyMode();
     }
 
+    // Инициализация
+    updateDates();
+    setInterval(updateDates, 1000 * 60 * 60); // Обновление каждый час
     applyMode();
 
+    // Интерактивные элементы
     function createHeart(x, y) {
+      clickSound.play().catch(() => {});
       const heart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       heart.setAttribute("viewBox", "0 0 32 29.6");
       heart.setAttribute("width", "30");
@@ -257,40 +347,38 @@
       setTimeout(() => heart.remove(), 4000);
     }
 
-    setInterval(() => {
-      const x = Math.random() * window.innerWidth;
-      const y = window.innerHeight;
-      createHeart(x, y);
-    }, 1000);
+    // Обработчики событий
+    function handleInteraction(x, y) {
+      createHeart(x - 15, y - 15);
+    }
 
-    document.body.addEventListener("click", (e) => {
-      createHeart(e.clientX - 15, e.clientY - 15);
+    document.body.addEventListener("click", (e) => handleInteraction(e.clientX, e.clientY));
+    document.body.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      handleInteraction(touch.clientX, touch.clientY);
     });
 
+    // Падающие звезды
     function createFallingStar() {
       const star = document.createElement("div");
       star.className = "star";
-      star.style.width = "3px";
-      star.style.height = "3px";
-      star.style.position = "absolute";
-      star.style.top = `${Math.random() * 10}%`;
-      star.style.left = `${Math.random() * 100}%`;
-      star.style.opacity = 0.9;
-      star.style.zIndex = "2";
-      star.style.background = "white";
-      star.style.borderRadius = "50%";
-      star.style.transition = "transform 2s linear, opacity 2s linear";
+      star.style.cssText = `
+        width: 3px;
+        height: 3px;
+        top: ${Math.random() * 10}%;
+        left: ${Math.random() * 100}%;
+        opacity: 0.9;
+        z-index: 2;
+        transition: transform 2s linear, opacity 2s linear;
+      `;
 
-      stars.appendChild(star);
-
+      elements.stars.appendChild(star);
       setTimeout(() => {
         star.style.transform = `translate(100px, 300px)`;
         star.style.opacity = 0;
+        setTimeout(() => star.remove(), 2000);
       }, 100);
-
-      setTimeout(() => {
-        star.remove();
-      }, 2500);
     }
 
     setInterval(() => {
@@ -302,3 +390,4 @@
   </script>
 </body>
 </html>
+```
