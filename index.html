@@ -49,6 +49,21 @@
       background: white;
       border-radius: 50%;
       opacity: 0.8;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .falling-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
       animation: fallingStar 3s linear forwards;
     }
 
@@ -199,6 +214,15 @@
       clouds.style.display = "none";
       stars.style.display = "block";
       stars.innerHTML = '';
+
+      // Создание обычных звезд
+      for (let i = 0; i < 200; i++) {
+        const star = document.createElement("div");
+        star.className = "star";
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        stars.appendChild(star);
+      }
     }
 
     function applyMode() {
@@ -221,42 +245,5 @@
 
     function createFallingStar() {
       const star = document.createElement("div");
-      star.className = "star";
-      star.style.left = `${Math.random() * 100}%`;
-
-      stars.appendChild(star);
-
-      // Удаление звезды после завершения анимации
-      star.addEventListener("animationend", () => {
-        star.remove();
-      });
-    }
-
-    // Задаём интервал для создания звезд
-    setInterval(createFallingStar, 3000);
-
-    document.body.addEventListener("click", (e) => {
-      createHeart(e.clientX - 15, e.clientY - 15);
-    });
-
-    function createHeart(x, y) {
-      const heart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      heart.setAttribute("viewBox", "0 0 32 29.6");
-      heart.setAttribute("width", "30");
-      heart.setAttribute("height", "30");
-      heart.classList.add("heart");
-      heart.style.left = `${x}px`;
-      heart.style.top = `${y}px`;
-      heart.style.position = 'absolute';
-
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", "M23.6,0c-3.4,0-6.4,2.1-7.6,5.2C14.8,2.1,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.1,16,21.2,16,21.2S32,17.5,32,8.4 C32,3.8,28.2,0,23.6,0z");
-      path.setAttribute("fill", "#ff4d6d");
-      heart.appendChild(path);
-
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 4000);
-    }
-  </script>
-</body>
-</html>
+      star.className = "falling-star";
+      star.style.left = `${Math.random()
