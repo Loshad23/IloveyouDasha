@@ -2,83 +2,57 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="Сайт-посвящение для самой любимой и прекрасной" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Мы вместе</title>
   <style>
     :root {
       --day-bg: linear-gradient(to top, #ffdde1, #ffc3a0);
       --night-bg: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
-      --text-primary: rgba(255, 255, 255, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
       padding: 20px;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       font-family: -apple-system, 'Segoe UI', sans-serif;
-      color: var(--text-primary);
       text-align: center;
+      color: #fff;
       overflow: hidden;
       position: relative;
-      box-sizing: border-box;
-    }
-
-    body::before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      transition: opacity 1.5s ease;
-      z-index: -1;
-      top: 0;
-      left: 0;
-    }
-
-    .day-mode::before {
-      background: var(--day-bg);
-      opacity: 1;
-    }
-
-    .night-mode::before {
-      background: var(--night-bg);
-      opacity: 1;
-    }
-
-    h1, p, h2 {
-      z-index: 2;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      margin: 0.8em 0;
-      line-height: 1.4;
+      transition: background 2s ease;
     }
 
     h1 {
-      font-size: 2.2rem;
-      font-weight: 600;
-      max-width: 90%;
+      font-size: 2em;
+      margin-bottom: 0.3em;
     }
 
     p {
-      font-size: 1.1rem;
+      font-size: 1.1em;
       max-width: 90%;
-      opacity: 0.95;
-      font-weight: 400;
-      letter-spacing: 0.3px;
     }
 
-    .stars {
+    h2 {
+      margin-top: 1em;
+      font-size: 1.3em;
+    }
+
+    .stars, .sun, .moon, .clouds {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
       pointer-events: none;
-      overflow: hidden;
+      z-index: 0;
     }
 
     .star {
@@ -86,9 +60,62 @@
       width: 2px;
       height: 2px;
       background: white;
-      opacity: 0.8;
       border-radius: 50%;
-      animation: fall 1.5s linear forwards;
+      opacity: 0.8;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .sun-shape {
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, #ffe259, #ffa751);
+      border-radius: 50%;
+      animation: pulse 3s infinite ease-in-out;
+      box-shadow: 0 0 30px 10px rgba(255, 223, 0, 0.5);
+      margin: auto;
+      margin-top: 40px;
+    }
+
+    .moon-shape {
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle at 30% 30%, #fff, #aaa);
+      border-radius: 50%;
+      margin: auto;
+      margin-top: 40px;
+      box-shadow: 0 0 20px 5px #ccc;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .cloud {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: floatClouds 60s linear infinite;
+    }
+
+    @keyframes floatClouds {
+      0% { transform: translateX(-200px); }
+      100% { transform: translateX(100vw); }
+    }
+
+    .falling-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: fall 1s linear forwards;
     }
 
     @keyframes fall {
@@ -97,120 +124,134 @@
         opacity: 1;
       }
       100% {
-        transform: translateY(100vh) scale(0.5);
+        transform: translateY(100vh) scale(1.5);
         opacity: 0;
       }
     }
 
     .mode-toggle {
       position: absolute;
-      top: 15px;
-      right: 15px;
-      background: rgba(255,255,255,0.3);
+      top: 20px;
+      right: 20px;
+      background: #ffffff40;
       border: none;
-      padding: 12px 18px;
-      border-radius: 15px;
+      padding: 10px 15px;
+      border-radius: 10px;
       cursor: pointer;
-      font-weight: 600;
-      color: #333;
+      font-weight: bold;
+      color: #000;
       z-index: 3;
-      backdrop-filter: blur(6px);
-      transition: all 0.2s ease;
-      font-size: 0.95rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     @media (max-width: 600px) {
-      body {
-        padding: 15px;
-        justify-content: flex-start;
-        padding-top: 70px;
-      }
-
       h1 {
-        font-size: 1.8rem;
-        margin: 0.5em 0;
-        line-height: 1.3;
+        font-size: 1.8em;
       }
 
-      p {
-        font-size: 1rem;
-        max-width: 95%;
-        letter-spacing: 0.2px;
-        line-height: 1.5;
+      p, h2 {
+        font-size: 1em;
+      }
+
+      .sun-shape, .moon-shape {
+        width: 60px;
+        height: 60px;
+        margin-top: 20px;
       }
 
       .mode-toggle {
-        padding: 10px 15px;
+        padding: 8px 12px;
         font-size: 0.85rem;
         top: 10px;
         right: 10px;
       }
-
-      #daysToAnniversary {
-        font-size: 1.1rem;
-        margin-top: 1.5em;
-      }
-    }
-
-    @media (max-width: 400px) {
-      h1 {
-        font-size: 1.6rem;
-      }
-      
-      p {
-        font-size: 0.95rem;
-      }
     }
   </style>
 </head>
-<body class="night-mode">
+<body>
+  <button class="mode-toggle" onclick="toggleMode()">Сменить режим</button>
+  <h1 id="daysTogether">Загрузка...</h1>
+  <p>Каждый день с тобой — как волшебство. Спасибо за всё, что ты делаешь. Люблю тебя безмерно.</p>
+  <h2 id="daysToAnniversary"></h2>
+
   <div class="stars" id="stars"></div>
-  <button class="mode-toggle" onclick="toggleMode()">Переключить режим</button>
-  <h1>Привет, моя самая любимая</h1>
-  <p id="daysTogether">Мы вместе уже ... дней</p>
-  <p id="daysToAnniversary">До нашей годовщины осталось ... дней</p>
+  <div class="clouds" id="clouds"></div>
+  <div class="sun" id="sun"><div class="sun-shape"></div></div>
+  <div class="moon" id="moon" style="display: none;"><div class="moon-shape"></div></div>
 
   <script>
-    function toggleMode() {
-      document.body.classList.toggle('day-mode');
-      document.body.classList.toggle('night-mode');
-    }
-
-    // Падающие звёзды каждую секунду
-    function createStar() {
-      const star = document.createElement('div');
-      star.className = 'star';
-      star.style.left = Math.random() * 100 + 'vw';
-      star.style.top = Math.random() * 20 + 'vh';
-      document.getElementById('stars').appendChild(star);
-      setTimeout(() => star.remove(), 2000);
-    }
-    setInterval(createStar, 1000);
-
-    // Адаптивность текста
-    function adjustTextSizes() {
-      const viewportWidth = window.innerWidth;
-      const baseSize = Math.min(Math.max(viewportWidth * 0.05, 14), 18);
-      document.documentElement.style.fontSize = `${baseSize}px`;
-    }
-    adjustTextSizes();
-    window.addEventListener('resize', adjustTextSizes);
-
-    // Подсчёт дней вместе и до годовщины
     const startDate = new Date("2024-11-04");
     const today = new Date();
-
     const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
     document.getElementById("daysTogether").textContent = `Мы вместе уже ${diffDays} дней`;
 
-    let nextAnniversary = new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate());
-    if (nextAnniversary < today) {
-      nextAnniversary.setFullYear(nextAnniversary.getFullYear() + 1);
+    const currentYear = today.getFullYear();
+    let nextAnniversary = new Date(currentYear, 10, 4); // Ноябрь = 10 (считается с 0)
+    if (today > nextAnniversary) {
+      nextAnniversary = new Date(currentYear + 1, 10, 4);
     }
-
     const daysToAnniv = Math.ceil((nextAnniversary - today) / (1000 * 60 * 60 * 24));
     document.getElementById("daysToAnniversary").textContent = `До нашей годовщины осталось ${daysToAnniv} дней`;
+
+    const body = document.body;
+    const stars = document.getElementById("stars");
+    const sun = document.getElementById("sun");
+    const moon = document.getElementById("moon");
+    const clouds = document.getElementById("clouds");
+    let mode = "auto";
+
+    function setDay() {
+      body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--day-bg');
+      sun.style.display = "block";
+      moon.style.display = "none";
+      stars.innerHTML = "";
+      clouds.innerHTML = "";
+      for (let i = 0; i < 10; i++) {
+        const cloud = document.createElement("div");
+        cloud.className = "cloud";
+        cloud.style.width = `${100 + Math.random() * 100}px`;
+        cloud.style.height = `${60 + Math.random() * 40}px`;
+        cloud.style.top = `${Math.random() * 40}%`;
+        cloud.style.left = `${Math.random() * 100}%`;
+        cloud.style.animationDuration = `${30 + Math.random() * 30}s`;
+        clouds.appendChild(cloud);
+      }
+    }
+
+    function setNight() {
+      body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--night-bg');
+      sun.style.display = "none";
+      moon.style.display = "block";
+      clouds.innerHTML = "";
+    }
+
+    function applyMode() {
+      if (mode === "auto") {
+        const hour = new Date().getHours();
+        hour >= 6 && hour < 18 ? setDay() : setNight();
+      } else if (mode === "day") {
+        setDay();
+      } else {
+        setNight();
+      }
+    }
+
+    function toggleMode() {
+      mode = mode === "auto" ? "day" : mode === "day" ? "night" : "auto";
+      applyMode();
+    }
+
+    applyMode();
+
+    function createFallingStar() {
+      const star = document.createElement("div");
+      star.className = "falling-star";
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `-5px`;
+      stars.appendChild(star);
+      setTimeout(() => stars.removeChild(star), 1000);
+    }
+
+    setInterval(createFallingStar, 1000);
   </script>
 </body>
 </html>
