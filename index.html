@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Мы вместе</title>
   <style>
     :root {
@@ -134,6 +135,25 @@
       color: #000;
       z-index: 3;
     }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8em;
+      }
+      p {
+        font-size: 1em;
+        padding: 0 10px;
+      }
+      .sun-shape, .moon-shape {
+        width: 70px;
+        height: 70px;
+        margin-top: 20px;
+      }
+      .mode-toggle {
+        padding: 8px 12px;
+        font-size: 0.9em;
+      }
+    }
   </style>
 </head>
 <body>
@@ -246,6 +266,39 @@
     document.body.addEventListener("click", (e) => {
       createHeart(e.clientX - 15, e.clientY - 15);
     });
+
+    function createFallingStar() {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.width = "3px";
+      star.style.height = "3px";
+      star.style.position = "absolute";
+      star.style.top = `${Math.random() * 10}%`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.opacity = 0.9;
+      star.style.zIndex = "2";
+      star.style.background = "white";
+      star.style.borderRadius = "50%";
+      star.style.transition = "transform 2s linear, opacity 2s linear";
+
+      stars.appendChild(star);
+
+      setTimeout(() => {
+        star.style.transform = `translate(100px, 300px)`;
+        star.style.opacity = 0;
+      }, 100);
+
+      setTimeout(() => {
+        star.remove();
+      }, 2500);
+    }
+
+    setInterval(() => {
+      const hour = new Date().getHours();
+      if (mode === "night" || (mode === "auto" && (hour < 6 || hour >= 18))) {
+        createFallingStar();
+      }
+    }, 1000);
   </script>
 </body>
 </html>
