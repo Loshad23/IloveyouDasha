@@ -10,45 +10,32 @@
       --night-bg: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      padding: 20px;
-      min-height: 100vh;
+      padding: 0;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-family: -apple-system, 'Segoe UI', sans-serif;
       text-align: center;
-      color: #fff;
       overflow: hidden;
+      transition: background 1.5s ease;
       position: relative;
-      transition: background 2s ease;
     }
 
-    h1 {
-      font-size: 2em;
-      margin-bottom: 0.3em;
-    }
-
-    p {
-      font-size: 1.1em;
+    h1, h2, p {
+      z-index: 2;
+      margin: 0.5em 0;
+      text-shadow: 0 0 8px rgba(0,0,0,0.5);
       max-width: 90%;
     }
 
-    h2 {
-      margin-top: 1em;
-      font-size: 1.3em;
-    }
-
-    .stars, .sun, .moon, .clouds {
+    .stars, .clouds, .sun, .moon {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
@@ -70,32 +57,6 @@
       50% { opacity: 1; }
     }
 
-    .sun-shape {
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle, #ffe259, #ffa751);
-      border-radius: 50%;
-      animation: pulse 3s infinite ease-in-out;
-      box-shadow: 0 0 30px 10px rgba(255, 223, 0, 0.5);
-      margin: auto;
-      margin-top: 40px;
-    }
-
-    .moon-shape {
-      width: 70px;
-      height: 70px;
-      background: radial-gradient(circle at 30% 30%, #fff, #aaa);
-      border-radius: 50%;
-      margin: auto;
-      margin-top: 40px;
-      box-shadow: 0 0 20px 5px #ccc;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
     .cloud {
       position: absolute;
       background: #fff;
@@ -109,22 +70,46 @@
       100% { transform: translateX(100vw); }
     }
 
-    .falling-star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: white;
+    .sun-shape {
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, #ffe259, #ffa751);
       border-radius: 50%;
-      animation: fall 1s linear forwards;
+      animation: pulse 3s infinite ease-in-out;
+      box-shadow: 0 0 30px 10px rgba(255, 223, 0, 0.5);
+      margin: auto;
+      margin-top: 30px;
     }
 
-    @keyframes fall {
+    .moon-shape {
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle at 30% 30%, #fff, #aaa);
+      border-radius: 50%;
+      margin: auto;
+      margin-top: 30px;
+      box-shadow: 0 0 20px 5px #ccc;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .heart {
+      position: absolute;
+      animation: floatUp 4s linear forwards;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    @keyframes floatUp {
       0% {
-        transform: translateY(0) scale(1);
+        transform: scale(0.6) translateY(0);
         opacity: 1;
       }
       100% {
-        transform: translateY(100vh) scale(1.5);
+        transform: scale(1.2) translateY(-200px);
         opacity: 0;
       }
     }
@@ -144,26 +129,8 @@
     }
 
     @media (max-width: 600px) {
-      h1 {
-        font-size: 1.8em;
-      }
-
-      p, h2 {
-        font-size: 1em;
-      }
-
-      .sun-shape, .moon-shape {
-        width: 60px;
-        height: 60px;
-        margin-top: 20px;
-      }
-
-      .mode-toggle {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-        top: 10px;
-        right: 10px;
-      }
+      h1 { font-size: 1.8rem; }
+      p, h2 { font-size: 1rem; }
     }
   </style>
 </head>
@@ -172,6 +139,7 @@
   <h1 id="daysTogether">Загрузка...</h1>
   <p>Каждый день с тобой — как волшебство. Спасибо за всё, что ты делаешь. Люблю тебя безмерно.</p>
   <h2 id="daysToAnniversary"></h2>
+  <p style="margin-top: 40px; font-size: 0.9em; opacity: 0.8;">Сайт создан с любовью</p>
 
   <div class="stars" id="stars"></div>
   <div class="clouds" id="clouds"></div>
@@ -184,11 +152,10 @@
     const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
     document.getElementById("daysTogether").textContent = `Мы вместе уже ${diffDays} дней`;
 
-    const currentYear = today.getFullYear();
-    let nextAnniversary = new Date(currentYear, 10, 4); // Ноябрь = 10 (считается с 0)
-    if (today > nextAnniversary) {
-      nextAnniversary = new Date(currentYear + 1, 10, 4);
-    }
+    // следующая годовщина
+    const nextAnniversary = new Date(startDate);
+    nextAnniversary.setFullYear(today.getFullYear());
+    if (today > nextAnniversary) nextAnniversary.setFullYear(today.getFullYear() + 1);
     const daysToAnniv = Math.ceil((nextAnniversary - today) / (1000 * 60 * 60 * 24));
     document.getElementById("daysToAnniversary").textContent = `До нашей годовщины осталось ${daysToAnniv} дней`;
 
@@ -203,8 +170,9 @@
       body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--day-bg');
       sun.style.display = "block";
       moon.style.display = "none";
-      stars.innerHTML = "";
-      clouds.innerHTML = "";
+      stars.style.display = "none";
+      clouds.style.display = "block";
+      clouds.innerHTML = '';
       for (let i = 0; i < 10; i++) {
         const cloud = document.createElement("div");
         cloud.className = "cloud";
@@ -221,12 +189,22 @@
       body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--night-bg');
       sun.style.display = "none";
       moon.style.display = "block";
-      clouds.innerHTML = "";
+      clouds.style.display = "none";
+      stars.style.display = "block";
+      stars.innerHTML = '';
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement("div");
+        star.className = "star";
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        stars.appendChild(star);
+      }
     }
 
     function applyMode() {
+      const hour = new Date().getHours();
       if (mode === "auto") {
-        const hour = new Date().getHours();
         hour >= 6 && hour < 18 ? setDay() : setNight();
       } else if (mode === "day") {
         setDay();
@@ -242,16 +220,34 @@
 
     applyMode();
 
-    function createFallingStar() {
-      const star = document.createElement("div");
-      star.className = "falling-star";
-      star.style.left = `${Math.random() * 100}%`;
-      star.style.top = `-5px`;
-      stars.appendChild(star);
-      setTimeout(() => stars.removeChild(star), 1000);
+    function createHeart(x, y) {
+      const heart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      heart.setAttribute("viewBox", "0 0 32 29.6");
+      heart.setAttribute("width", "30");
+      heart.setAttribute("height", "30");
+      heart.classList.add("heart");
+      heart.style.left = `${x}px`;
+      heart.style.top = `${y}px`;
+      heart.style.position = 'absolute';
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", "M23.6,0c-3.4,0-6.4,2.1-7.6,5.2C14.8,2.1,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.1,16,21.2,16,21.2S32,17.5,32,8.4 C32,3.8,28.2,0,23.6,0z");
+      path.setAttribute("fill", "#ff4d6d");
+      heart.appendChild(path);
+
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 4000);
     }
 
-    setInterval(createFallingStar, 1000);
+    setInterval(() => {
+      const x = Math.random() * window.innerWidth;
+      const y = window.innerHeight - 30;
+      createHeart(x, y);
+    }, 1000);
+
+    document.body.addEventListener("click", (e) => {
+      createHeart(e.clientX - 15, e.clientY - 15);
+    });
   </script>
 </body>
 </html>
