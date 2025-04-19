@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="Сайт-посвящение для самой любимой и прекрасной">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Сайт-посвящение для самой любимой и прекрасной" />
   <title>Мы вместе</title>
   <style>
     :root {
@@ -70,7 +70,7 @@
       letter-spacing: 0.3px;
     }
 
-    .stars, .sun, .moon, .clouds {
+    .stars {
       position: absolute;
       top: 0;
       left: 0;
@@ -78,10 +78,29 @@
       height: 100%;
       z-index: 0;
       pointer-events: none;
-      contain: strict;
+      overflow: hidden;
     }
 
-    /* Стили для облаков и звезд остаются как в предыдущем варианте */
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      opacity: 0.8;
+      border-radius: 50%;
+      animation: fall 1.5s linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+    }
 
     .mode-toggle {
       position: absolute;
@@ -128,12 +147,6 @@
         right: 10px;
       }
 
-      .sun-shape, .moon-shape {
-        width: 60px;
-        height: 60px;
-        margin-top: 15px;
-      }
-
       #daysToAnniversary {
         font-size: 1.1rem;
         margin-top: 1.5em;
@@ -151,30 +164,53 @@
     }
   </style>
 </head>
-<body>
-  <!-- Остальная разметка без изменений -->
-  
-  <script>
-    // Весь предыдущий JavaScript код с исправлениями
-    
-    // Добавляем обработчик изменения ориентации
-    window.addEventListener('resize', () => {
-      if(window.innerWidth < 600) {
-        document.body.classList.add('mobile-view');
-      } else {
-        document.body.classList.remove('mobile-view');
-      }
-    });
+<body class="night-mode">
+  <div class="stars" id="stars"></div>
+  <button class="mode-toggle" onclick="toggleMode()">Переключить режим</button>
+  <h1>Привет, моя самая любимая</h1>
+  <p id="daysTogether">Мы вместе уже ... дней</p>
+  <p id="daysToAnniversary">До нашей годовщины осталось ... дней</p>
 
-    // Адаптация текста при загрузке
+  <script>
+    function toggleMode() {
+      document.body.classList.toggle('day-mode');
+      document.body.classList.toggle('night-mode');
+    }
+
+    // Падающие звёзды каждую секунду
+    function createStar() {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + 'vw';
+      star.style.top = Math.random() * 20 + 'vh';
+      document.getElementById('stars').appendChild(star);
+      setTimeout(() => star.remove(), 2000);
+    }
+    setInterval(createStar, 1000);
+
+    // Адаптивность текста
     function adjustTextSizes() {
       const viewportWidth = window.innerWidth;
       const baseSize = Math.min(Math.max(viewportWidth * 0.05, 14), 18);
       document.documentElement.style.fontSize = `${baseSize}px`;
     }
-    
     adjustTextSizes();
     window.addEventListener('resize', adjustTextSizes);
+
+    // Подсчёт дней вместе и до годовщины
+    const startDate = new Date("2024-11-04");
+    const today = new Date();
+
+    const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+    document.getElementById("daysTogether").textContent = `Мы вместе уже ${diffDays} дней`;
+
+    let nextAnniversary = new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate());
+    if (nextAnniversary < today) {
+      nextAnniversary.setFullYear(nextAnniversary.getFullYear() + 1);
+    }
+
+    const daysToAnniv = Math.ceil((nextAnniversary - today) / (1000 * 60 * 60 * 24));
+    document.getElementById("daysToAnniversary").textContent = `До нашей годовщины осталось ${daysToAnniv} дней`;
   </script>
 </body>
 </html>
