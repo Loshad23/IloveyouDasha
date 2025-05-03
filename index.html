@@ -37,6 +37,7 @@
             filter: blur(5px);
             opacity: 0.8;
             animation: cloudMove 60s linear infinite;
+            z-index: 1;
         }
 
         /* Солнце/луна */
@@ -47,6 +48,7 @@
             left: 50%;
             transform: translateX(-50%);
             animation: pulse 4s infinite alternate;
+            z-index: 2;
         }
         .sun {
             background: #ffde59;
@@ -67,6 +69,7 @@
             background: white;
             border-radius: 50%;
             animation: twinkle 2s infinite alternate;
+            z-index: 1;
         }
         .falling-star {
             position: absolute;
@@ -76,6 +79,7 @@
             border-radius: 50%;
             animation: falling 2s linear;
             opacity: 0;
+            z-index: 1;
         }
 
         /* Сердечки */
@@ -85,6 +89,7 @@
             color: red;
             pointer-events: none;
             animation: float 4s linear forwards;
+            z-index: 3;
         }
 
         /* Основной контент */
@@ -100,19 +105,19 @@
         }
         h1 {
             margin-bottom: 20px;
-            font-size: 2em;
+            font-size: 1.8em;
         }
         .counter {
-            font-size: 1.7em;
+            font-size: 1.5em;
             margin: 15px 0;
             font-weight: bold;
         }
         .anniversary {
-            font-size: 1.3em;
+            font-size: 1.2em;
             margin: 15px 0;
         }
         .compliment {
-            font-size: 1.5em;
+            font-size: 1.3em;
             margin-top: 20px;
             font-style: italic;
             color: #d40078;
@@ -202,7 +207,7 @@
 
     <script>
         // Дата начала отношений (исправленный формат)
-        const startDate = new Date(2024, 10, 4); // Ноябрь = 10 (т.к. месяцы с 0)
+        const startDate = new Date(2024, 10, 4); // Ноябрь = 10 (месяцы с 0)
         
         // Комплименты
         const compliments = [
@@ -223,7 +228,7 @@
         const complimentEl = document.getElementById('compliment');
         const toggleBtn = document.getElementById('toggleBtn');
 
-        // Переменная для ручного управления
+        // Переменные
         let manualOverride = false;
         let fallingStarInterval;
 
@@ -231,18 +236,18 @@
         function updateTimers() {
             const now = new Date();
             
-            // Дней вместе (исправленный расчёт)
+            // Дней вместе
             const diffTime = Math.abs(now - startDate);
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             daysTogetherEl.textContent = `${diffDays} ${declOfNum(diffDays, ['день', 'дня', 'дней'])} вместе`;
             
-            // До годовщины (исправленный расчёт)
+            // До годовщины
             const nextAnniversary = new Date(startDate);
             nextAnniversary.setFullYear(now.getFullYear() + (now >= new Date(now.getFullYear(), startDate.getMonth(), startDate.getDate()) ? 1 : 0));
             const daysToAnniversary = Math.ceil((nextAnniversary - now) / (1000 * 60 * 60 * 24));
             anniversaryEl.textContent = `До годовщины: ${daysToAnniversary} ${declOfNum(daysToAnniversary, ['день', 'дня', 'дней'])}`;
             
-            // Смена дня и ночи (если нет ручного переопределения)
+            // Смена дня и ночи
             if (!manualOverride) {
                 const hours = now.getHours();
                 if (hours >= 6 && hours < 20) {
@@ -252,7 +257,7 @@
                 }
             }
             
-            // Смена комплимента каждый час
+            // Смена комплимента
             const complimentIndex = (diffDays + now.getHours()) % compliments.length;
             complimentEl.textContent = compliments[complimentIndex];
         }
@@ -370,14 +375,4 @@
             heart.className = 'heart';
             heart.innerHTML = '❤';
             heart.style.left = `${x}px`;
-            heart.style.top = `${y}px`;
-            heart.style.fontSize = `${10 + Math.random() * 30}px`;
-            heart.style.animationDuration = `${2 + Math.random() * 3}s`;
-            document.body.appendChild(heart);
-            
-            if (auto) {
-                heart.style.left = `${Math.random() * 100}vw`;
-                heart.style.top = `calc(100vh + 20px)`;
-            }
-            
-            setTimeout(() => {
+            heart.style
