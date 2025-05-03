@@ -36,19 +36,28 @@
             border-radius: 50%;
             filter: blur(5px);
             opacity: 0.8;
+            animation: cloudMove 60s linear infinite;
         }
 
         /* Солнце/луна */
-        .sun {
+        .sun-moon {
             position: absolute;
-            background: #ffde59;
             border-radius: 50%;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: pulse 4s infinite alternate;
+        }
+        .sun {
+            background: #ffde59;
+            width: 80px;
+            height: 80px;
             box-shadow: 0 0 50px #ffde59;
         }
         .moon {
-            position: absolute;
             background: #f0f0f0;
-            border-radius: 50%;
+            width: 60px;
+            height: 60px;
             box-shadow: 0 0 30px #fff;
         }
 
@@ -87,23 +96,24 @@
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             position: relative;
+            max-width: 90%;
         }
         h1 {
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-size: 2em;
         }
         .counter {
-            font-size: 2em;
-            margin: 20px 0;
+            font-size: 1.7em;
+            margin: 15px 0;
             font-weight: bold;
         }
         .anniversary {
-            font-size: 1.5em;
-            margin: 20px 0;
+            font-size: 1.3em;
+            margin: 15px 0;
         }
         .compliment {
-            font-size: 1.8em;
-            margin-top: 30px;
+            font-size: 1.5em;
+            margin-top: 20px;
             font-style: italic;
             color: #d40078;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
@@ -116,8 +126,8 @@
         /* Кнопка переключения */
         .toggle-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: rgba(255, 255, 255, 0.3);
             border: none;
             border-radius: 50%;
@@ -170,6 +180,14 @@
                 opacity: 0;
             }
         }
+        @keyframes cloudMove {
+            0% { transform: translateX(-150px); }
+            100% { transform: translateX(calc(100vw + 150px)); }
+        }
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.05); }
+        }
     </style>
 </head>
 <body class="day">
@@ -207,6 +225,7 @@
 
         // Переменная для ручного управления
         let manualOverride = false;
+        let fallingStarInterval;
 
         // Обновление таймера
         function updateTimers() {
@@ -278,20 +297,16 @@
         // Создание элементов дня/ночи
         function createDayNightElements() {
             // Удаляем старые элементы
-            document.querySelectorAll('.cloud, .sun, .moon, .star').forEach(el => el.remove());
+            document.querySelectorAll('.cloud, .sun-moon, .star').forEach(el => el.remove());
             
             const isDay = body.classList.contains('day');
             
+            // Создаем солнце/луну
+            const sunMoon = document.createElement('div');
+            sunMoon.className = `sun-moon ${isDay ? 'sun' : 'moon'}`;
+            document.body.appendChild(sunMoon);
+            
             if (isDay) {
-                // Солнце
-                const sun = document.createElement('div');
-                sun.className = 'sun';
-                sun.style.width = '80px';
-                sun.style.height = '80px';
-                sun.style.top = '50px';
-                sun.style.right = '100px';
-                document.body.appendChild(sun);
-                
                 // Облака
                 for (let i = 0; i < 5; i++) {
                     const cloud = document.createElement('div');
@@ -300,19 +315,16 @@
                     cloud.style.width = `${size}px`;
                     cloud.style.height = `${size}px`;
                     cloud.style.top = `${50 + Math.random() * 100}px`;
-                    cloud.style.left = `${Math.random() * 100}vw`;
+                    cloud.style.left = `${-150 + Math.random() * 100}px`;
+                    cloud.style.animationDuration = `${50 + Math.random() * 70}s`;
                     document.body.appendChild(cloud);
                 }
-            } else {
-                // Луна
-                const moon = document.createElement('div');
-                moon.className = 'moon';
-                moon.style.width = '60px';
-                moon.style.height = '60px';
-                moon.style.top = '50px';
-                moon.style.right = '100px';
-                document.body.appendChild(moon);
                 
+                // Останавливаем падающие звёзды
+                if (fallingStarInterval) {
+                    clearInterval(fallingStarInterval);
+                }
+            } else {
                 // Звёзды
                 for (let i = 0; i < 100; i++) {
                     const star = document.createElement('div');
@@ -326,8 +338,8 @@
                     document.body.appendChild(star);
                 }
                 
-                // Падающие звёзды
-                if (typeof fallingStarInterval !== 'undefined') {
+                // Падающие звёзды (только ночью)
+                if (fallingStarInterval) {
                     clearInterval(fallingStarInterval);
                 }
                 fallingStarInterval = setInterval(() => {
@@ -339,7 +351,6 @@
         }
 
         // Создание падающей звезды
-        let fallingStarInterval;
         function createFallingStar() {
             const star = document.createElement('div');
             star.className = 'falling-star';
@@ -359,44 +370,4 @@
             heart.innerHTML = '❤';
             heart.style.left = `${x}px`;
             heart.style.top = `${y}px`;
-            heart.style.fontSize = `${10 + Math.random() * 30}px`;
-            heart.style.animationDuration = `${2 + Math.random() * 3}s`;
-            document.body.appendChild(heart);
-            
-            if (auto) {
-                heart.style.left = `${Math.random() * 100}vw`;
-                heart.style.top = `calc(100vh + 20px)`;
-            }
-            
-            setTimeout(() => {
-                heart.remove();
-            }, 4000);
-        }
-
-        // Автоматические сердечки
-        setInterval(() => {
-            if (Math.random() > 0.7) {
-                createHeart(0, 0, true);
-            }
-        }, 800);
-
-        // Клик по экрану
-        document.addEventListener('click', (e) => {
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    createHeart(e.clientX + (Math.random() * 40 - 20), e.clientY + (Math.random() * 40 - 20));
-                }, i * 100);
-            }
-        });
-
-        // Инициализация
-        updateTimers();
-        createDayNightElements();
-        setInterval(updateTimers, 60000); // Обновлять каждую минуту
-        setInterval(createDayNightElements, 3600000); // Проверять смену дня/ночи каждый час
-        
-        // Обработчик кнопки переключения
-        toggleBtn.addEventListener('click', toggleDayNight);
-    </script>
-</body>
-</html>
+            heart.style.fontSize = `${10 + Math.random() * 30
