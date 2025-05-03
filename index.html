@@ -201,8 +201,8 @@
     </div>
 
     <script>
-        // Дата начала отношений
-        const startDate = new Date('2024-11-04T00:00:00');
+        // Дата начала отношений (исправленный формат)
+        const startDate = new Date(2024, 10, 4); // Ноябрь = 10 (т.к. месяцы с 0)
         
         // Комплименты
         const compliments = [
@@ -231,18 +231,15 @@
         function updateTimers() {
             const now = new Date();
             
-            // Дней вместе
-            const diffTime = now - startDate;
+            // Дней вместе (исправленный расчёт)
+            const diffTime = Math.abs(now - startDate);
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             daysTogetherEl.textContent = `${diffDays} ${declOfNum(diffDays, ['день', 'дня', 'дней'])} вместе`;
             
-            // До годовщины
+            // До годовщины (исправленный расчёт)
             const nextAnniversary = new Date(startDate);
-            nextAnniversary.setFullYear(now.getFullYear());
-            if (nextAnniversary < now) {
-                nextAnniversary.setFullYear(now.getFullYear() + 1);
-            }
-            const daysToAnniversary = Math.floor((nextAnniversary - now) / (1000 * 60 * 60 * 24));
+            nextAnniversary.setFullYear(now.getFullYear() + (now >= new Date(now.getFullYear(), startDate.getMonth(), startDate.getDate()) ? 1 : 0));
+            const daysToAnniversary = Math.ceil((nextAnniversary - now) / (1000 * 60 * 60 * 24));
             anniversaryEl.textContent = `До годовщины: ${daysToAnniversary} ${declOfNum(daysToAnniversary, ['день', 'дня', 'дней'])}`;
             
             // Смена дня и ночи (если нет ручного переопределения)
@@ -256,12 +253,14 @@
             }
             
             // Смена комплимента каждый час
-            const complimentIndex = (now.getDate() + now.getMonth() + now.getHours()) % compliments.length;
+            const complimentIndex = (diffDays + now.getHours()) % compliments.length;
             complimentEl.textContent = compliments[complimentIndex];
         }
 
         // Установка дневного режима
         function setDayMode() {
+            if (body.classList.contains('day')) return;
+            
             body.classList.add('day');
             body.classList.remove('night');
             createDayNightElements();
@@ -269,6 +268,8 @@
 
         // Установка ночного режима
         function setNightMode() {
+            if (body.classList.contains('night')) return;
+            
             body.classList.add('night');
             body.classList.remove('day');
             createDayNightElements();
@@ -297,7 +298,7 @@
         // Создание элементов дня/ночи
         function createDayNightElements() {
             // Удаляем старые элементы
-            document.querySelectorAll('.cloud, .sun-moon, .star').forEach(el => el.remove());
+            document.querySelectorAll('.cloud, .sun-moon, .star, .falling-star').forEach(el => el.remove());
             
             const isDay = body.classList.contains('day');
             
@@ -370,4 +371,13 @@
             heart.innerHTML = '❤';
             heart.style.left = `${x}px`;
             heart.style.top = `${y}px`;
-            heart.style.fontSize = `${10 + Math.random() * 30
+            heart.style.fontSize = `${10 + Math.random() * 30}px`;
+            heart.style.animationDuration = `${2 + Math.random() * 3}s`;
+            document.body.appendChild(heart);
+            
+            if (auto) {
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.top = `calc(100vh + 20px)`;
+            }
+            
+            setTimeout(() => {
