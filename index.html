@@ -3,400 +3,954 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Наша любовь с 4 ноября 2024</title>
+    <title>Наша история любви</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            overflow: hidden;
-            transition: background 1s;
-            height: 100vh;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #e84393;
+            --secondary: #fd79a8;
+            --light: #ffffff;
+            --dark: #2d3436;
+            --day-bg: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            --night-bg: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            min-height: 100vh;
+            transition: background 1.5s ease;
+            overflow-x: hidden;
+            color: var(--dark);
+            padding: 20px;
+        }
+
+        /* Дневная тема */
+        .day-theme {
+            background: var(--day-bg);
+            color: var(--dark);
+        }
+
+        /* Ночная тема */
+        .night-theme {
+            background: var(--night-bg);
+            color: var(--light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Навигация */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .night-theme .nav-container {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: inherit;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(232, 67, 147, 0.1);
+        }
+
+        .night-theme .nav-links a:hover {
+            background: rgba(253, 121, 168, 0.2);
+        }
+
+        /* Главный заголовок */
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* Таймер */
+        .timer-container {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 25px;
+            padding: 40px 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeInUp 1.5s forwards 1s;
+            backdrop-filter: blur(10px);
+        }
+
+        .night-theme .timer-container {
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            min-width: 120px;
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .time-unit:hover {
+            transform: translateY(-5px);
+        }
+
+        .night-theme .time-unit {
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .time-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .time-label {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            color: #636e72;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .night-theme .time-label {
+            color: #dfe6e9;
+        }
+
+        .anniversary-message {
+            font-size: 1.8rem;
+            margin: 30px 0;
+            color: var(--primary);
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .night-theme .anniversary-message {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .anniversary-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Комплименты */
+        .compliment-section {
+            margin: 50px 0;
+            opacity: 0;
+            animation: fadeIn 2s forwards 1.5s;
             text-align: center;
+        }
+
+        .compliment-title {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+
+        .compliment-container {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .night-theme .compliment-container {
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .compliment {
+            font-size: 1.6rem;
+            font-style: italic;
+            margin: 20px 0;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            line-height: 1.5;
+        }
+
+        .night-theme .compliment {
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .compliment:hover {
+            transform: scale(1.03);
+        }
+
+        .compliment-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .compliment-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(232, 67, 147, 0.3);
         }
 
-        /* День/ночь */
-        .day {
-            background: linear-gradient(135deg, #ffb6c1, #ff69b4);
-        }
-        .night {
-            background: linear-gradient(135deg, #0f0524, #1a0a2e);
-            color: #fff;
+        .compliment-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
         }
 
-        /* Облака */
-        .cloud {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            filter: blur(5px);
-            opacity: 0.8;
+        /* Переключатель темы */
+        .theme-switcher {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
         }
 
-        /* Солнце/луна */
-        .sun {
-            position: absolute;
-            background: #ffde59;
-            border-radius: 50%;
-            box-shadow: 0 0 50px #ffde59;
-        }
-        .moon {
-            position: absolute;
-            background: #f0f0f0;
-            border-radius: 50%;
-            box-shadow: 0 0 30px #fff;
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 70px;
+            height: 38px;
         }
 
-        /* Звёзды */
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s infinite alternate;
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
-        .falling-star {
+
+        .slider {
             position: absolute;
-            background: white;
-            width: 2px;
-            height: 2px;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--dark);
+            transition: .4s;
+            border-radius: 34px;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 30px;
+            width: 30px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
             border-radius: 50%;
-            animation: falling 2s linear;
+            z-index: 2;
+        }
+
+        .slider i {
+            font-size: 20px;
+            color: #fdcb6e;
+            z-index: 1;
+        }
+
+        .slider .fa-sun {
+            margin-right: auto;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .slider .fa-moon {
+            margin-left: auto;
+            opacity: 1;
+            transition: var(--transition);
+        }
+
+        input:checked + .slider {
+            background-color: #fdcb6e;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(32px);
+        }
+
+        input:checked + .slider .fa-sun {
+            opacity: 1;
+        }
+
+        input:checked + .slider .fa-moon {
             opacity: 0;
         }
 
-        /* Сердечки */
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        /* Декор для дня */
+        .sun {
+            position: fixed;
+            top: 50px;
+            right: 100px;
+            width: 100px;
+            height: 100px;
+            background: #fdcb6e;
+            border-radius: 50%;
+            box-shadow: 0 0 60px #fdcb6e;
+            animation: float 8s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        .cloud {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.9;
+            z-index: -1;
+        }
+
+        .cloud1 {
+            top: 80px;
+            left: 100px;
+            width: 90px;
+            height: 40px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            animation: float 12s infinite ease-in-out;
+        }
+
+        .cloud2 {
+            top: 150px;
+            left: 250px;
+            width: 120px;
+            height: 50px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            animation: float 10s infinite ease-in-out reverse;
+        }
+
+        .cloud3 {
+            top: 300px;
+            right: 200px;
+            width: 110px;
+            height: 45px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            animation: float 14s infinite ease-in-out 2s;
+        }
+
+        /* Декор для ночи */
+        .moon {
+            position: fixed;
+            top: 50px;
+            right: 100px;
+            width: 100px;
+            height: 100px;
+            background: #dfe6e9;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #dfe6e9;
+            animation: float 10s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        .star {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite;
+            z-index: -1;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Анимация сердечек */
         .heart {
             position: absolute;
-            font-size: 20px;
-            color: red;
             pointer-events: none;
-            animation: float 4s linear forwards;
-        }
-
-        /* Основной контент */
-        .container {
+            animation: floatHeart 5s forwards;
             z-index: 10;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-        h1 {
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-        .counter {
-            font-size: 2em;
-            margin: 20px 0;
-            font-weight: bold;
-        }
-        .anniversary {
-            font-size: 1.5em;
-            margin: 20px 0;
-        }
-        .compliment {
-            font-size: 1.8em;
-            margin-top: 30px;
-            font-style: italic;
-            color: #d40078;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        .night .compliment {
-            color: #ff9ec6;
-            text-shadow: 0 0 5px #ff69b4;
+            font-size: 28px;
         }
 
-        /* Кнопка переключения */
-        .toggle-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.3);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s;
-            backdrop-filter: blur(2px);
-        }
-        .toggle-btn:hover {
-            background: rgba(255, 255, 255, 0.5);
-            transform: scale(1.1);
-        }
-        .day .toggle-btn {
-            color: #333;
-        }
-        .night .toggle-btn {
-            color: #fff;
-        }
-
-        /* Анимации */
-        @keyframes twinkle {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-        @keyframes falling {
-            0% { 
-                transform: translateY(-100px) translateX(0);
-                opacity: 0; 
-            }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { 
-                transform: translateY(100vh) translateX(100px);
-                opacity: 0; 
-            }
-        }
-        @keyframes float {
-            0% { 
-                transform: translateY(0) rotate(0deg);
+        @keyframes floatHeart {
+            0% {
+                transform: translate(0, 0) scale(0);
                 opacity: 1;
             }
-            100% { 
-                transform: translateY(-100vh) rotate(360deg);
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(1);
                 opacity: 0;
+            }
+        }
+
+        /* Футер */
+        footer {
+            margin-top: 80px;
+            text-align: center;
+            padding: 30px 0;
+            border-top: 2px solid rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .night-theme footer {
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Адаптивность для мобильных */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .timer {
+                gap: 15px;
+            }
+            
+            .time-unit {
+                min-width: 90px;
+                padding: 15px 10px;
+            }
+            
+            .time-value {
+                font-size: 2.5rem;
+            }
+            
+            .time-label {
+                font-size: 0.9rem;
+            }
+            
+            .anniversary-message {
+                font-size: 1.4rem;
+                padding: 15px;
+            }
+            
+            .compliment {
+                font-size: 1.3rem;
+                padding: 20px;
+            }
+            
+            .sun, .moon {
+                width: 60px;
+                height: 60px;
+                right: 30px;
+                top: 30px;
+            }
+            
+            .cloud {
+                display: none;
+            }
+            
+            .theme-switcher {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .switch {
+                width: 60px;
+                height: 32px;
+            }
+            
+            .slider:before {
+                height: 24px;
+                width: 24px;
+            }
+            
+            input:checked + .slider:before {
+                transform: translateX(28px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .time-unit {
+                min-width: 70px;
+            }
+            
+            .time-value {
+                font-size: 2rem;
+            }
+            
+            .compliment {
+                font-size: 1.1rem;
+            }
+            
+            .compliment-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Дополнительные стили для улучшения мобильного UX */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 25px;
+                right: 15px;
+            }
+            
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+                padding: 20px 0;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links a {
+                padding: 12px;
             }
         }
     </style>
 </head>
-<body class="day">
-    <button class="toggle-btn" id="toggleBtn">🌓</button>
-    
+<body class="day-theme">
+    <div class="theme-switcher">
+        <label class="switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider">
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+
+    <div class="moon" style="display: none;"></div>
+
     <div class="container">
-        <h1>Наша любовь</h1>
-        <div class="counter" id="days-together">0 дней вместе</div>
-        <div class="anniversary" id="anniversary-countdown">До годовщины: 0 дней</div>
-        <div class="compliment" id="compliment">Ты самое прекрасное, что случилось в моей жизни!</div>
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-heart"></i>
+                <span>Наша Любовь</span>
+            </div>
+            <button class="mobile-menu-btn" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="#"><i class="fas fa-home"></i> Главная</a>
+                <a href="#"><i class="fas fa-history"></i> Наша история</a>
+                <a href="#"><i class="fas fa-images"></i> Галерея</a>
+                <a href="#"><i class="fas fa-gift"></i> Сюрпризы</a>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <h1>Мы вместе</h1>
+            <p class="subtitle">Каждый день с тобой наполнен счастьем, и я ценю каждое мгновение, проведенное рядом с тобой</p>
+        </section>
+
+        <section class="timer-container">
+            <div class="timer">
+                <div class="time-unit">
+                    <div class="time-value" id="days">0</div>
+                    <div class="time-label">Дней</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-value" id="months">0</div>
+                    <div class="time-label">Месяцев</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-value" id="years">0</div>
+                    <div class="time-label">Лет</div>
+                </div>
+            </div>
+            <div class="anniversary-message" id="anniversary"></div>
+        </section>
+
+        <section class="compliment-section">
+            <h2 class="compliment-title">Ты самая лучшая!</h2>
+            <div class="compliment-container">
+                <div class="compliment" id="compliment">Загрузка комплимента...</div>
+                <div class="compliment-controls">
+                    <button class="compliment-btn" id="prev-compliment">
+                        <i class="fas fa-chevron-left"></i> Назад
+                    </button>
+                    <button class="compliment-btn" id="next-compliment">
+                        Вперед <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Создано с <i class="fas fa-heart" style="color: #e84393;"></i> специально для тебя</p>
+        </footer>
     </div>
 
     <script>
-        // Дата начала отношений
-        const startDate = new Date('2024-11-04T00:00:00');
-        
-        // Комплименты
-        const compliments = [
-            "Ты самое прекрасное, что случилось в моей жизни!",
-            "С тобой каждый день - как праздник!",
-            "Ты делаешь этот мир лучше просто своим существованием!",
-            "Моё сердце бьётся только для тебя!",
-            "Ты - воплощение всех моих мечтаний!",
-            "С тобой даже обычные дни становятся волшебными!",
-            "Ты - самая красивая девушка на свете!",
-            "Моя жизнь стала яркой с момента нашей встречи!"
-        ];
-
-        // Элементы
-        const body = document.body;
-        const daysTogetherEl = document.getElementById('days-together');
-        const anniversaryEl = document.getElementById('anniversary-countdown');
-        const complimentEl = document.getElementById('compliment');
-        const toggleBtn = document.getElementById('toggleBtn');
-
-        // Переменная для ручного управления
-        let manualOverride = false;
-
-        // Обновление таймера
-        function updateTimers() {
-            const now = new Date();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Элементы DOM
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const sun = document.querySelector('.sun');
+            const moon = document.querySelector('.moon');
+            const daysElement = document.getElementById('days');
+            const monthsElement = document.getElementById('months');
+            const yearsElement = document.getElementById('years');
+            const anniversaryElement = document.getElementById('anniversary');
+            const complimentElement = document.getElementById('compliment');
+            const prevComplimentBtn = document.getElementById('prev-compliment');
+            const nextComplimentBtn = document.getElementById('next-compliment');
+            const mobileMenuBtn = document.getElementById('mobile-menu');
+            const navLinks = document.getElementById('nav-links');
             
-            // Дней вместе
-            const diffTime = now - startDate;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            daysTogetherEl.textContent = `${diffDays} ${declOfNum(diffDays, ['день', 'дня', 'дней'])} вместе`;
+            // Дата начала отношений (4 ноября 2024)
+            const startDate = new Date(2024, 10, 4); // Ноябрь это 10 (месяцы с 0)
             
-            // До годовщины
-            const nextAnniversary = new Date(startDate);
-            nextAnniversary.setFullYear(now.getFullYear());
-            if (nextAnniversary < now) {
-                nextAnniversary.setFullYear(now.getFullYear() + 1);
+            // Комплименты
+            const compliments = [
+                "Ты делаешь мой мир ярче каждый день!",
+                "Твоя улыбка заставляет мое сердце биться чаще!",
+                "С тобой я становлюсь лучше!",
+                "Ты невероятно красива!",
+                "Мне так повезло, что ты в моей жизни!",
+                "Ты моё самое большое счастье!",
+                "Твои глаза — мои любимые звезды!",
+                "Любовь к тебе делает меня сильнее!",
+                "Ты вдохновляешь меня каждый день!",
+                "С тобой даже обычные дни становятся особенными!",
+                "Ты самая удивительная женщина на свете!",
+                "Мне нравится каждая черточка твоего лица!",
+                "Ты преображаешь всё вокруг себя!",
+                "Твой смех — моя любимая мелодия!",
+                "Я скучаю по тебе каждую секунду!"
+            ];
+            
+            let currentCompliment = 0;
+            
+            // Установка комплимента
+            function setCompliment(index) {
+                complimentElement.textContent = compliments[index];
             }
-            const daysToAnniversary = Math.floor((nextAnniversary - now) / (1000 * 60 * 60 * 24));
-            anniversaryEl.textContent = `До годовщины: ${daysToAnniversary} ${declOfNum(daysToAnniversary, ['день', 'дня', 'дней'])}`;
             
-            // Смена дня и ночи (если нет ручного переопределения)
-            if (!manualOverride) {
-                const hours = now.getHours();
-                if (hours >= 6 && hours < 20) {
-                    setDayMode();
+            // Переключение комплиментов
+            function nextCompliment() {
+                currentCompliment = (currentCompliment + 1) % compliments.length;
+                setCompliment(currentCompliment);
+            }
+            
+            function prevCompliment() {
+                currentCompliment = (currentCompliment - 1 + compliments.length) % compliments.length;
+                setCompliment(currentCompliment);
+            }
+            
+            // Обновление таймера
+            function updateTimer() {
+                const now = new Date();
+                const diffTime = Math.abs(now - startDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const diffMonths = Math.floor(diffDays / 30.44); // Среднее количество дней в месяце
+                const diffYears = Math.floor(diffDays / 365.25);
+                
+                daysElement.textContent = diffDays;
+                monthsElement.textContent = diffMonths;
+                yearsElement.textContent = diffYears;
+                
+                // Проверка на годовщину (каждый месяц)
+                if (diffDays > 0 && diffDays % 30 === 0) {
+                    const monthAnniversary = diffMonths;
+                    anniversaryElement.textContent = `Поздравляю! Мы вместе уже ${monthAnniversary} ${getMonthWord(monthAnniversary)}!`;
+                    anniversaryElement.classList.add('show');
+                    
+                    // Автоматически скрыть сообщение через 10 секунд
+                    setTimeout(() => {
+                        anniversaryElement.classList.remove('show');
+                    }, 10000);
                 } else {
-                    setNightMode();
+                    anniversaryElement.classList.remove('show');
                 }
             }
             
-            // Смена комплимента каждый час
-            const complimentIndex = (now.getDate() + now.getMonth() + now.getHours()) % compliments.length;
-            complimentEl.textContent = compliments[complimentIndex];
-        }
-
-        // Установка дневного режима
-        function setDayMode() {
-            body.classList.add('day');
-            body.classList.remove('night');
-            createDayNightElements();
-        }
-
-        // Установка ночного режима
-        function setNightMode() {
-            body.classList.add('night');
-            body.classList.remove('day');
-            createDayNightElements();
-        }
-
-        // Переключение режима вручную
-        function toggleDayNight() {
-            manualOverride = true;
-            if (body.classList.contains('day')) {
-                setNightMode();
-            } else {
-                setDayMode();
-            }
-        }
-
-        // Склонение числительных
-        function declOfNum(n, text_forms) {  
-            n = Math.abs(n) % 100; 
-            const n1 = n % 10;
-            if (n > 10 && n < 20) return text_forms[2]; 
-            if (n1 > 1 && n1 < 5) return text_forms[1]; 
-            if (n1 === 1) return text_forms[0]; 
-            return text_forms[2];
-        }
-
-        // Создание элементов дня/ночи
-        function createDayNightElements() {
-            // Удаляем старые элементы
-            document.querySelectorAll('.cloud, .sun, .moon, .star').forEach(el => el.remove());
-            
-            const isDay = body.classList.contains('day');
-            
-            if (isDay) {
-                // Солнце
-                const sun = document.createElement('div');
-                sun.className = 'sun';
-                sun.style.width = '80px';
-                sun.style.height = '80px';
-                sun.style.top = '50px';
-                sun.style.right = '100px';
-                document.body.appendChild(sun);
-                
-                // Облака
-                for (let i = 0; i < 5; i++) {
-                    const cloud = document.createElement('div');
-                    cloud.className = 'cloud';
-                    const size = 50 + Math.random() * 70;
-                    cloud.style.width = `${size}px`;
-                    cloud.style.height = `${size}px`;
-                    cloud.style.top = `${50 + Math.random() * 100}px`;
-                    cloud.style.left = `${Math.random() * 100}vw`;
-                    document.body.appendChild(cloud);
+            // Получение правильной формы слова "месяц"
+            function getMonthWord(months) {
+                if (months % 10 === 1 && months % 100 !== 11) {
+                    return "месяц";
+                } else if ([2, 3, 4].includes(months % 10) && ![12, 13, 14].includes(months % 100)) {
+                    return "месяца";
+                } else {
+                    return "месяцев";
                 }
-            } else {
-                // Луна
-                const moon = document.createElement('div');
-                moon.className = 'moon';
-                moon.style.width = '60px';
-                moon.style.height = '60px';
-                moon.style.top = '50px';
-                moon.style.right = '100px';
-                document.body.appendChild(moon);
+            }
+            
+            // Переключение темы
+            themeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    body.classList.remove('day-theme');
+                    body.classList.add('night-theme');
+                    sun.style.display = 'none';
+                    moon.style.display = 'block';
+                    createStars();
+                } else {
+                    body.classList.remove('night-theme');
+                    body.classList.add('day-theme');
+                    sun.style.display = 'block';
+                    moon.style.display = 'none';
+                    removeStars();
+                }
+            });
+            
+            // Создание звезд для ночной темы
+            function createStars() {
+                removeStars();
                 
-                // Звёзды
-                for (let i = 0; i < 100; i++) {
+                for (let i = 0; i < 70; i++) {
                     const star = document.createElement('div');
-                    star.className = 'star';
-                    const size = 1 + Math.random() * 2;
+                    star.classList.add('star');
+                    
+                    const size = Math.random() * 4 + 1;
                     star.style.width = `${size}px`;
                     star.style.height = `${size}px`;
-                    star.style.top = `${Math.random() * 100}vh`;
-                    star.style.left = `${Math.random() * 100}vw`;
-                    star.style.animationDelay = `${Math.random() * 2}s`;
+                    
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+                    
                     document.body.appendChild(star);
                 }
+            }
+            
+            // Удаление звезд
+            function removeStars() {
+                const stars = document.querySelectorAll('.star');
+                stars.forEach(star => star.remove());
+            }
+            
+            // Создание сердечек при клике
+            document.addEventListener('click', function(e) {
+                createHeart(e.clientX, e.clientY);
+            });
+            
+            // Функция создания сердечка
+            function createHeart(x, y) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
                 
-                // Падающие звёзды
-                if (typeof fallingStarInterval !== 'undefined') {
-                    clearInterval(fallingStarInterval);
+                // Случайный выбор между сердечком и поцелуем
+                const isKiss = Math.random() > 0.5;
+                
+                if (isKiss) {
+                    heart.innerHTML = '💋';
+                    heart.style.fontSize = '34px';
+                } else {
+                    heart.innerHTML = '❤️';
+                    heart.style.fontSize = '32px';
                 }
-                fallingStarInterval = setInterval(() => {
-                    if (Math.random() > 0.7) {
-                        createFallingStar();
-                    }
-                }, 2000);
-            }
-        }
-
-        // Создание падающей звезды
-        let fallingStarInterval;
-        function createFallingStar() {
-            const star = document.createElement('div');
-            star.className = 'falling-star';
-            star.style.top = `${Math.random() * 50}px`;
-            star.style.left = `${Math.random() * 100}vw`;
-            document.body.appendChild(star);
-            
-            setTimeout(() => {
-                star.remove();
-            }, 2000);
-        }
-
-        // Создание сердечек
-        function createHeart(x, y, auto = false) {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = '❤';
-            heart.style.left = `${x}px`;
-            heart.style.top = `${y}px`;
-            heart.style.fontSize = `${10 + Math.random() * 30}px`;
-            heart.style.animationDuration = `${2 + Math.random() * 3}s`;
-            document.body.appendChild(heart);
-            
-            if (auto) {
-                heart.style.left = `${Math.random() * 100}vw`;
-                heart.style.top = `calc(100vh + 20px)`;
-            }
-            
-            setTimeout(() => {
-                heart.remove();
-            }, 4000);
-        }
-
-        // Автоматические сердечки
-        setInterval(() => {
-            if (Math.random() > 0.7) {
-                createHeart(0, 0, true);
-            }
-        }, 800);
-
-        // Клик по экрану
-        document.addEventListener('click', (e) => {
-            for (let i = 0; i < 5; i++) {
+                
+                heart.style.position = 'fixed';
+                heart.style.left = `${x - 15}px`;
+                heart.style.top = `${y - 15}px`;
+                heart.style.pointerEvents = 'none';
+                
+                // Случайное направление движения
+                const tx = (Math.random() - 0.5) * 200;
+                const ty = -(Math.random() * 100 + 50);
+                heart.style.setProperty('--tx', `${tx}px`);
+                heart.style.setProperty('--ty', `${ty}px`);
+                
+                document.body.appendChild(heart);
+                
+                // Удаление сердечка после анимации
                 setTimeout(() => {
-                    createHeart(e.clientX + (Math.random() * 40 - 20), e.clientY + (Math.random() * 40 - 20));
-                }, i * 100);
+                    heart.remove();
+                }, 5000);
             }
+            
+            // Автоматическое переключение темы в зависимости от времени суток
+            function setThemeByTime() {
+                const hour = new Date().getHours();
+                
+                if (hour >= 7 && hour < 20) {
+                    // Дневное время
+                    themeToggle.checked = false;
+                    body.classList.remove('night-theme');
+                    body.classList.add('day-theme');
+                    sun.style.display = 'block';
+                    moon.style.display = 'none';
+                    removeStars();
+                } else {
+                    // Ночное время
+                    themeToggle.checked = true;
+                    body.classList.remove('day-theme');
+                    body.classList.add('night-theme');
+                    sun.style.display = 'none';
+                    moon.style.display = 'block';
+                    createStars();
+                }
+            }
+            
+            // Мобильное меню
+            mobileMenuBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+            
+            // Закрытие меню при клике на ссылку
+            const navLinksItems = navLinks.querySelectorAll('a');
+            navLinksItems.forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.classList.remove('active');
+                });
+            });
+            
+            // Инициализация
+            setThemeByTime();
+            updateTimer();
+            setCompliment(currentCompliment);
+            
+            // Обработчики событий для кнопок комплиментов
+            nextComplimentBtn.addEventListener('click', nextCompliment);
+            prevComplimentBtn.addEventListener('click', prevCompliment);
+            
+            // Обновление таймера каждую минуту
+            setInterval(updateTimer, 60000);
+            
+            // Смена комплимента каждые 15 секунд
+            setInterval(nextCompliment, 15000);
         });
-
-        // Инициализация
-        updateTimers();
-        createDayNightElements();
-        setInterval(updateTimers, 60000); // Обновлять каждую минуту
-        setInterval(createDayNightElements, 3600000); // Проверять смену дня/ночи каждый час
-        
-        // Обработчик кнопки переключения
-        toggleBtn.addEventListener('click', toggleDayNight);
     </script>
 </body>
 </html>
